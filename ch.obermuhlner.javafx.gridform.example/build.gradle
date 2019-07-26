@@ -1,0 +1,13 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'ch.obermuhlner.javafx.gridform.example.Example'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	//compile group: 'ch.obermuhlner', name: 'javafx-gridform', version: '2.1.0'
+	compile project(':ch.obermuhlner.javafx.gridform')
+}
