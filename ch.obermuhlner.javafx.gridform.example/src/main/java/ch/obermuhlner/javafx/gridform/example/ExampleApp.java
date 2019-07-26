@@ -5,13 +5,14 @@ import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.scene.Group;
-import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 public class ExampleApp extends Application {
@@ -33,7 +34,7 @@ public class ExampleApp extends Application {
         mainTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         ListProperty<String> stringListProperty = new SimpleListProperty<>(FXCollections.observableArrayList(
-                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"));
+                "a", "b", "c", "x", "y", "z"));
         ListProperty<Animal> animalListProperty = new SimpleListProperty<>(FXCollections.observableArrayList(
                 Animal.values()));
 
@@ -43,6 +44,8 @@ public class ExampleApp extends Application {
         BooleanProperty booleanProperty = new SimpleBooleanProperty();
         ObjectProperty<Animal> animalProperty = new SimpleObjectProperty<>();
         ListProperty<String> stringListProperty2 = new SimpleListProperty<>(FXCollections.observableArrayList("a", "b", "Unknown"));
+        ObjectProperty<LocalDate> dateProperty = new SimpleObjectProperty<>(LocalDate.now());
+        ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(Color.PEACHPUFF);
 
         {
             GridPane gridPane = new GridPane();
@@ -52,8 +55,6 @@ public class ExampleApp extends Application {
             gridForm.addLabel("Label", stringProperty);
             gridForm.addLabel("Label", integerProperty, GridForm.INTEGER_FORMAT);
             gridForm.addEmpty();
-
-            gridForm.addNode("Node", new Rectangle(20, 20));
 
             gridForm.addButton("Button", "OK");
             gridForm.addButton("Button", "OK", new Rectangle(20, 20));
@@ -87,11 +88,20 @@ public class ExampleApp extends Application {
             gridForm.addComboBox("ComboBox", Arrays.asList(Animal.values()), animalProperty);
             gridForm.addComboBox("ComboBox", Arrays.asList(1, 2, 3), integerProperty);
 
+            gridForm.addChoiceBox("ChoiceBox", stringListProperty, stringProperty);
+            gridForm.addChoiceBox("ChoiceBox", Arrays.asList(Animal.values()), animalProperty);
+
+            gridForm.addRadioButton("RadioButton", Arrays.asList(Animal.values()), animalProperty);
+
             gridForm.addListView("ListView", stringListProperty, stringProperty);
             ListView<Animal> listView1 = gridForm.addListView("ListView", animalListProperty, animalProperty);
             listView1.setPrefHeight(24 * 4);
             ListView<Animal> listView2 = gridForm.addListView("ListView", Arrays.asList(Animal.values()), animalProperty);
             listView2.setPrefHeight(24 * 4);
+
+            gridForm.addButton("Action", "Animal=null").setOnAction(event -> {
+                animalProperty.set(null);
+            });
 
             mainTabPane.getTabs().add(new Tab("Lists (Single Selection)", gridPane));
         }
@@ -102,14 +112,26 @@ public class ExampleApp extends Application {
 
             gridForm.addListView("ListView", stringListProperty, stringListProperty2);
             gridForm.addListView("Selected ListView", stringListProperty2, stringProperty);
+            gridForm.addCheckBox("CheckBox", stringListProperty, stringListProperty2);
 
-            gridForm.addButton("Select", "Add x,y,z").setOnAction(event -> {
+            gridForm.addButton("Action", "Add x,y,z").setOnAction(event -> {
                 stringListProperty2.add("x");
                 stringListProperty2.add("y");
                 stringListProperty2.add("z");
             });
 
             mainTabPane.getTabs().add(new Tab("Lists (Multi Selection)", gridPane));
+        }
+
+        {
+            GridPane gridPane = new GridPane();
+            GridForm gridForm = new GridForm(gridPane);
+
+            gridForm.addDatePicker("DatePicker", dateProperty);
+            gridForm.addColorPicker("ColorPicker", colorProperty);
+            gridForm.addNode("Node", new Rectangle(20, 20));
+
+            mainTabPane.getTabs().add(new Tab("Misc", gridPane));
         }
 
         primaryStage.setScene(scene);
