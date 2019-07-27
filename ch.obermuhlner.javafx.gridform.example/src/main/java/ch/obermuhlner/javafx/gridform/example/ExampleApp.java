@@ -54,6 +54,7 @@ public class ExampleApp extends Application {
             gridForm.addLabel("Label");
             gridForm.addLabel("Label", stringProperty);
             gridForm.addLabel("Label", integerProperty, GridForm.INTEGER_FORMAT);
+            gridForm.addLabel("Label", doubleProperty, GridForm.DOUBLE_FORMAT);
             gridForm.addEmpty();
 
             gridForm.addButton("Button", "OK");
@@ -93,11 +94,21 @@ public class ExampleApp extends Application {
 
             gridForm.addRadioButton("RadioButton", Arrays.asList(Animal.values()), animalProperty);
 
-            gridForm.addListView("ListView", stringListProperty, stringProperty);
-            ListView<Animal> listView1 = gridForm.addListView("ListView", animalListProperty, animalProperty);
+            mainTabPane.getTabs().add(new Tab("Choices (Multi Selection)", gridPane));
+        }
+
+        {
+            GridPane gridPane = new GridPane();
+            GridForm gridForm = new GridForm(gridPane);
+
+            gridForm.addLabel("Label", stringProperty);
+
+            ListView<String> listView1 = gridForm.addListView("ListView", stringListProperty, stringProperty);
             listView1.setPrefHeight(24 * 4);
-            ListView<Animal> listView2 = gridForm.addListView("ListView", Arrays.asList(Animal.values()), animalProperty);
+            ListView<Animal> listView2 = gridForm.addListView("ListView", animalListProperty, animalProperty);
             listView2.setPrefHeight(24 * 4);
+            ListView<Animal> listView3 = gridForm.addListView("ListView", Arrays.asList(Animal.values()), animalProperty);
+            listView3.setPrefHeight(24 * 4);
 
             gridForm.addButton("Action", "Animal=null").setOnAction(event -> {
                 animalProperty.set(null);
@@ -110,8 +121,10 @@ public class ExampleApp extends Application {
             GridPane gridPane = new GridPane();
             GridForm gridForm = new GridForm(gridPane);
 
-            gridForm.addListView("ListView", stringListProperty, stringListProperty2);
-            gridForm.addListView("Selected ListView", stringListProperty2, stringProperty);
+            ListView<String> listView = gridForm.addListView("ListView", stringListProperty, stringListProperty2);
+            listView.setPrefHeight(24 * 8);
+            ListView<String> selectedListView = gridForm.addListView("Selected ListView", stringListProperty2, stringProperty);
+            selectedListView.setPrefHeight(24 * 4);
             gridForm.addCheckBox("CheckBox", stringListProperty, stringListProperty2);
 
             gridForm.addButton("Action", "Add x,y,z").setOnAction(event -> {

@@ -121,7 +121,7 @@ public class GridForm {
         gridPane.add(control, 1, rowIndex);
         Bindings.bindBidirectional(control.itemsProperty(), listProperty);
         control.valueProperty().bindBidirectional(selectedElementProperty);
-        if (selectedElementProperty.getValue() == null) {
+        if (selectedElementProperty.getValue() == null && !listProperty.isEmpty()) {
             selectedElementProperty.setValue(listProperty.get(0));
         }
         rowIndex++;
@@ -141,7 +141,7 @@ public class GridForm {
         gridPane.add(control, 1, rowIndex);
         Bindings.bindBidirectional(control.itemsProperty(), listProperty);
         control.valueProperty().bindBidirectional(selectedElementProperty);
-        if (selectedElementProperty.getValue() == null) {
+        if (selectedElementProperty.getValue() == null && !listProperty.isEmpty()) {
             selectedElementProperty.setValue(listProperty.get(0));
         }
         rowIndex++;
@@ -200,7 +200,7 @@ public class GridForm {
             control.getSelectionModel().select(newValue);
         });
 
-        if (selectedElementProperty.getValue() == null) {
+        if (selectedElementProperty.getValue() == null && !listProperty.isEmpty()) {
             selectedElementProperty.setValue(listProperty.get(0));
         } else {
             control.getSelectionModel().select(selectedElementProperty.getValue());
@@ -280,10 +280,20 @@ public class GridForm {
     }
 
     public Slider addSlider(String label, DoubleProperty doubleProperty, double min, double max, double value) {
-        gridPane.add(new Text(label), 0, rowIndex);
+        addLeftLabel(label);
 
         Slider control = new Slider(min, max, value);
-        Bindings.bindBidirectional(doubleProperty, control.valueProperty());
+
+        // TODO binding is not stable - for some reason 2 manual listeners seems to be more stable
+        //Bindings.bindBidirectional(control.valueProperty(), doubleProperty);
+
+        doubleProperty.addListener((observable, oldValue, newValue) -> {
+            control.valueProperty().set(newValue.doubleValue());
+        });
+        control.valueProperty().addListener((observable, oldValue, newValue) -> {
+            doubleProperty.set(newValue.doubleValue());
+        });
+
         gridPane.add(control, 1, rowIndex);
         rowIndex++;
         return control;
@@ -298,7 +308,7 @@ public class GridForm {
     }
 
     public CheckBox addCheckBox(String label, String text, BooleanProperty booleanProperty) {
-        gridPane.add(new Text(label), 0, rowIndex);
+        addLeftLabel(label);
 
         CheckBox control = new CheckBox(text);
         Bindings.bindBidirectional(booleanProperty, control.selectedProperty());
@@ -345,7 +355,7 @@ public class GridForm {
     }
 
     public DatePicker addDatePicker(String label, ObjectProperty<LocalDate> dateProperty) {
-        gridPane.add(new Text(label), 0, rowIndex);
+        addLeftLabel(label);
 
         DatePicker control = new DatePicker(dateProperty.get());
         Bindings.bindBidirectional(dateProperty, control.valueProperty());
@@ -355,7 +365,7 @@ public class GridForm {
     }
 
     public ColorPicker addColorPicker(String label, ObjectProperty<Color> colorProperty) {
-        gridPane.add(new Text(label), 0, rowIndex);
+        addLeftLabel(label);
 
         ColorPicker control = new ColorPicker(colorProperty.get());
         Bindings.bindBidirectional(colorProperty, control.valueProperty());
