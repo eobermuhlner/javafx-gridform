@@ -1,6 +1,7 @@
 package ch.obermuhlner.javafx.gridform.example;
 
 import ch.obermuhlner.javafx.gridform.GridForm;
+import ch.obermuhlner.javafx.gridform.RowBuilder;
 import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -46,6 +47,47 @@ public class ExampleApp extends Application {
         ListProperty<String> stringListProperty2 = new SimpleListProperty<>(FXCollections.observableArrayList("a", "b", "Unknown"));
         ObjectProperty<LocalDate> dateProperty = new SimpleObjectProperty<>(LocalDate.now());
         ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(Color.PEACHPUFF);
+
+        {
+            GridPane gridPane = new GridPane();
+            GridForm gridForm = new GridForm(gridPane);
+
+            gridForm.row()
+                    .label("Label")
+                    .label(stringProperty);
+            gridForm.row()
+                    .label("Label")
+                    .empty()
+                    .label("Cells can be empty");
+            gridForm.row()
+                    .label("Button")
+                    .button("Click me")
+                    .with(b -> b.setOnAction(event -> b.setText("Clicked")));
+            gridForm.row()
+                    .label("TextField")
+                    .textField(stringProperty);
+            gridForm.row()
+                    .label("TextField")
+                    .textField(doubleProperty, GridForm.DOUBLE_FORMAT);
+            gridForm.row()
+                    .label("Slider")
+                    .slider(doubleProperty, 0, 10)
+                    .with(slider -> {
+                        slider.setShowTickMarks(true);
+                        slider.setShowTickLabels(true);
+                        slider.setMajorTickUnit(1.0);
+                        slider.setMinorTickCount(10);
+                    })
+                    .label(doubleProperty, GridForm.DOUBLE_FORMAT);
+            gridForm.row()
+                    .label("ComboBox")
+                    .comboBox(animalListProperty, animalProperty);
+            gridForm.row()
+                    .label("ComboBox")
+                    .comboBox(Animal.values(), animalProperty);
+
+            mainTabPane.getTabs().add(new Tab("Fluent", gridPane));
+        }
 
         {
             GridPane gridPane = new GridPane();

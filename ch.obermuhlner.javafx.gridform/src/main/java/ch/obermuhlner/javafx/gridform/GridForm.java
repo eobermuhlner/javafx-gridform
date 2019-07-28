@@ -28,6 +28,10 @@ public class GridForm {
         this.gridPane = gridPane;
     }
 
+    public RowBuilder row() {
+        return new RowBuilder(gridPane, rowIndex++, 0);
+    }
+
     public void addEmpty() {
         addLabel("");
     }
