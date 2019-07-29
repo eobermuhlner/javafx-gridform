@@ -328,7 +328,7 @@ public class RowBuilder {
         return checkBoxes(new VBox(), selectedElementsProperty, elements);
     }
 
-    public <T, P extends Pane> RegionRowBuilder<P> checkBoxes(P pane, ListProperty<T> selectedElementsProperty, List... elements) {
+    public <T, P extends Pane> RegionRowBuilder<P> checkBoxes(P pane, ListProperty<T> selectedElementsProperty, T... elements) {
         return checkBoxes(pane, selectedElementsProperty, Arrays.asList(elements));
     }
 
