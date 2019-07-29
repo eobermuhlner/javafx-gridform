@@ -210,7 +210,8 @@ ObjectProperty<Animal> animalProperty = new SimpleObjectProperty<>();
 ListProperty<Animal> animalListProperty = new SimpleListProperty<>(FXCollections.observableArrayList(
         Animal.values()));
 
-gridForm.row().label("ListView")
+gridForm.row()
+        .label("ListView")
         .listView(animalProperty, animalListProperty)
         .with(listView -> listView.setPrefHeight(24 * 4));
 ```
@@ -227,7 +228,8 @@ ListProperty<Animal> selectedAnimalListProperty = new SimpleListProperty<>(FXCol
 ListProperty<Animal> animalListProperty = new SimpleListProperty<>(FXCollections.observableArrayList(
         Animal.values()));
 
-gridForm.row().label("ListView")
+gridForm.row()
+        .label("ListView")
         .listView(selectedAnimalListProperty, animalListProperty)
         .with(listView -> listView.setPrefHeight(24 * 6));
 ```
