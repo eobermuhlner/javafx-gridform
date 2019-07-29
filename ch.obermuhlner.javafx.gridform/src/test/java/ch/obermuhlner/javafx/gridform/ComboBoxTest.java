@@ -22,7 +22,7 @@ public class ComboBoxTest extends AbstractGridFormTest {
     @Override
     protected void setup(GridForm gridForm) {
         gridForm.row()
-                .comboBox(stringListProperty, stringProperty)
+                .comboBox(stringProperty, stringListProperty)
                 .with(comboxBox -> this.comboxBox = comboxBox);
     }
 

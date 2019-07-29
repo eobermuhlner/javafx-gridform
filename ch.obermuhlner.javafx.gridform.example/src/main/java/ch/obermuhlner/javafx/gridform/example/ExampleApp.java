@@ -8,12 +8,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 
 public class ExampleApp extends Application {
 
@@ -81,10 +81,10 @@ public class ExampleApp extends Application {
                     .label(doubleProperty, GridForm.DOUBLE_FORMAT);
             gridForm.row()
                     .label("ComboBox")
-                    .comboBox(animalListProperty, animalProperty);
+                    .comboBox(animalProperty, animalListProperty);
             gridForm.row()
                     .label("ComboBox")
-                    .comboBox(Animal.values(), animalProperty);
+                    .comboBox(animalProperty, Animal.values());
 
             mainTabPane.getTabs().add(new Tab("Fluent", gridPane));
         }
@@ -129,15 +129,16 @@ public class ExampleApp extends Application {
 
             gridForm.row().label("Label").label(stringProperty);
 
-            gridForm.row().label("ComboBox").comboBox(stringListProperty, stringProperty);
-            gridForm.row().label("ComboBox").comboBox(animalListProperty, animalProperty);
-            gridForm.row().label("ComboBox").comboBox(Animal.values(), animalProperty);
-            gridForm.row().label("ComboBox").comboBox(Arrays.asList(1, 2, 3), integerProperty);
+            gridForm.row().label("ComboBox").comboBox(stringProperty, stringListProperty);
+            gridForm.row().label("ComboBox").comboBox(animalProperty, animalListProperty);
+            gridForm.row().label("ComboBox").comboBox(animalProperty, Animal.values());
+            gridForm.row().label("ComboBox").comboBox(integerProperty, 1, 2, 3);
 
-            gridForm.row().label("ChoiceBox").choiceBox(stringListProperty, stringProperty);
-            gridForm.row().label("ChoiceBox").choiceBox(Animal.values(), animalProperty);
+            gridForm.row().label("ChoiceBox").choiceBox(stringProperty, stringListProperty);
+            gridForm.row().label("ChoiceBox").choiceBox(animalProperty, Animal.values());
 
-            gridForm.row().label("RadioButton").radioButtons(Arrays.asList(Animal.values()), animalProperty);
+            gridForm.row().label("RadioButton").radioButtons(animalProperty, Animal.values());
+            gridForm.row().label("RadioButton").radioButtons(new HBox(), animalProperty, Animal.values());
 
             mainTabPane.getTabs().add(new Tab("Choices (Multi Selection)", gridPane));
         }
@@ -149,13 +150,13 @@ public class ExampleApp extends Application {
             gridForm.row().label("Label").label(stringProperty);
 
             gridForm.row().label("ListView")
-                    .listView(stringListProperty, stringProperty)
+                    .listView(stringProperty, stringListProperty)
                     .with(listView -> listView.setPrefHeight(24 * 4));
             gridForm.row().label("ListView")
-                    .listView(animalListProperty, animalProperty)
+                    .listView(animalProperty, animalListProperty)
                     .with(listView -> listView.setPrefHeight(24 * 4));
             gridForm.row().label("ListView")
-                    .listView(Animal.values(), animalProperty)
+                    .listView(animalProperty, Animal.values())
                     .with(listView -> listView.setPrefHeight(24 * 4));
 
             gridForm.row().label("Action")
@@ -172,12 +173,13 @@ public class ExampleApp extends Application {
             GridForm gridForm = new GridForm(gridPane);
 
             gridForm.row().label("ListView")
-                    .listView(stringListProperty, stringListProperty2)
+                    .listView(stringListProperty2, stringListProperty)
                     .with(listView -> listView.setPrefHeight(24 * 8));
             gridForm.row().label("Selected ListView")
-                    .listView(stringListProperty2, stringProperty)
+                    .listView(stringProperty, stringListProperty2)
                     .with(listView -> listView.setPrefHeight(24 * 8));
-            gridForm.row().label("CheckBox").checkBoxes(stringListProperty, stringListProperty2);
+            gridForm.row().label("CheckBox").checkBoxes(stringListProperty2, stringListProperty);
+            gridForm.row().label("CheckBox").checkBoxes(new HBox(), stringListProperty2, stringListProperty);
 
             gridForm.row().label("Action")
                     .button("Add x,y,z")

@@ -11,7 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 import java.text.Format;
 import java.time.LocalDate;
@@ -124,46 +123,46 @@ public class RowBuilder {
         return control(control);
     }
 
-    public <T> ControlRowBuilder<ComboBox<T>> comboBox(T[] elementArray, Property<T> selectedElementProperty) {
-        return comboBox(Arrays.asList(elementArray), selectedElementProperty);
+    public <T> ControlRowBuilder<ComboBox<T>> comboBox(Property<T> selectedElementProperty, T... elements) {
+        return comboBox(selectedElementProperty, Arrays.asList(elements));
     }
 
-    public <T> ControlRowBuilder<ComboBox<T>> comboBox(List<T> elementList, Property<T> selectedElementProperty) {
-        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elementList));
+    public <T> ControlRowBuilder<ComboBox<T>> comboBox(Property<T> selectedElementProperty, List<T> elements) {
+        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elements));
 
-        return comboBox(listProperty, selectedElementProperty);
+        return comboBox(selectedElementProperty, listProperty);
     }
 
-    public <T> ControlRowBuilder<ComboBox<T>> comboBox(ListProperty<T> listProperty, Property<T> selectedElementProperty) {
+    public <T> ControlRowBuilder<ComboBox<T>> comboBox(Property<T> selectedElementProperty, ListProperty<T> elementsProperty) {
         ComboBox<T> control = new ComboBox<T>();
-        Bindings.bindBidirectional(control.itemsProperty(), listProperty);
+        Bindings.bindBidirectional(control.itemsProperty(), elementsProperty);
         control.valueProperty().bindBidirectional(selectedElementProperty);
-        if (selectedElementProperty.getValue() == null && !listProperty.isEmpty()) {
-            selectedElementProperty.setValue(listProperty.get(0));
+        if (selectedElementProperty.getValue() == null && !elementsProperty.isEmpty()) {
+            selectedElementProperty.setValue(elementsProperty.get(0));
         }
 
         return control(control);
     }
 
-    public <T> ControlRowBuilder<ChoiceBox<T>> choiceBox(ListProperty<T> listProperty, Property<T> selectedElementProperty) {
+    public <T> ControlRowBuilder<ChoiceBox<T>> choiceBox(Property<T> selectedElementProperty, ListProperty<T> elementsProperty) {
         ChoiceBox<T> control = new ChoiceBox<>();
-        Bindings.bindBidirectional(control.itemsProperty(), listProperty);
+        Bindings.bindBidirectional(control.itemsProperty(), elementsProperty);
         control.valueProperty().bindBidirectional(selectedElementProperty);
-        if (selectedElementProperty.getValue() == null && !listProperty.isEmpty()) {
-            selectedElementProperty.setValue(listProperty.get(0));
+        if (selectedElementProperty.getValue() == null && !elementsProperty.isEmpty()) {
+            selectedElementProperty.setValue(elementsProperty.get(0));
         }
 
         return control(control);
     }
 
-    public <T> ControlRowBuilder<ChoiceBox<T>> choiceBox(List<T> elementList, Property<T> selectedElementProperty) {
-        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elementList));
+    public <T> ControlRowBuilder<ChoiceBox<T>> choiceBox(Property<T> selectedElementProperty, List<T> elements) {
+        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elements));
 
-        return choiceBox(listProperty, selectedElementProperty);
+        return choiceBox(selectedElementProperty, listProperty);
     }
 
-    public <T> ControlRowBuilder<ChoiceBox<T>> choiceBox(T[] elementArray, Property<T> selectedElementProperty) {
-        return choiceBox(Arrays.asList(elementArray), selectedElementProperty);
+    public <T> ControlRowBuilder<ChoiceBox<T>> choiceBox(Property<T> selectedElementProperty, T... elements) {
+        return choiceBox(selectedElementProperty, Arrays.asList(elements));
     }
 
     public ControlRowBuilder<CheckBox> checkBox(BooleanProperty booleanProperty) {
@@ -177,9 +176,9 @@ public class RowBuilder {
         return control(control);
     }
 
-    public <T> ControlRowBuilder<ListView<T>> listView(ListProperty<T> listProperty, Property<T> selectedElementProperty) {
+    public <T> ControlRowBuilder<ListView<T>> listView(Property<T> selectedElementProperty, ListProperty<T> elementsProperty) {
         ListView<T> control = new ListView<>();
-        Bindings.bindBidirectional(control.itemsProperty(), listProperty);
+        Bindings.bindBidirectional(control.itemsProperty(), elementsProperty);
 
         control.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedElementProperty.setValue(newValue);
@@ -188,8 +187,8 @@ public class RowBuilder {
             control.getSelectionModel().select(newValue);
         });
 
-        if (selectedElementProperty.getValue() == null && !listProperty.isEmpty()) {
-            selectedElementProperty.setValue(listProperty.get(0));
+        if (selectedElementProperty.getValue() == null && !elementsProperty.isEmpty()) {
+            selectedElementProperty.setValue(elementsProperty.get(0));
         } else {
             control.getSelectionModel().select(selectedElementProperty.getValue());
         }
@@ -197,19 +196,19 @@ public class RowBuilder {
         return control(control);
     }
 
-    public <T> ControlRowBuilder<ListView<T>> listView(List<T> elementList, Property<T> selectedElementProperty) {
-        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elementList));
+    public <T> ControlRowBuilder<ListView<T>> listView(Property<T> selectedElementProperty, List<T> elements) {
+        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elements));
 
-        return listView(listProperty, selectedElementProperty);
+        return listView(selectedElementProperty, listProperty);
     }
 
-    public <T> ControlRowBuilder<ListView<T>> listView(T[] elementArray, Property<T> selectedElementProperty) {
-        return listView(Arrays.asList(elementArray), selectedElementProperty);
+    public <T> ControlRowBuilder<ListView<T>> listView(Property<T> selectedElementProperty, T... elements) {
+        return listView(selectedElementProperty, Arrays.asList(elements));
     }
 
-    public <T> ControlRowBuilder<ListView<T>> listView(ListProperty<T> listProperty, ListProperty<T> selectedElementsProperty) {
+    public <T> ControlRowBuilder<ListView<T>> listView(ListProperty<T> selectedElementsProperty, ListProperty<T> elementsProperty) {
         ListView<T> control = new ListView<>();
-        Bindings.bindBidirectional(control.itemsProperty(), listProperty);
+        Bindings.bindBidirectional(control.itemsProperty(), elementsProperty);
 
         control.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -254,44 +253,42 @@ public class RowBuilder {
                 selectionModel.select(toAdd);
             }
             for (T toRemove : selectionRemaining) {
-                selectionModel.clearSelection(listProperty.indexOf(toRemove));
+                selectionModel.clearSelection(elementsProperty.indexOf(toRemove));
             }
         });
 
         return control(control);
     }
 
-    public <T> ControlRowBuilder<ListView<T>> listView(List<T> elementList, ListProperty<T> selectedElementsProperty) {
-        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elementList));
+    public <T> ControlRowBuilder<ListView<T>> listView(ListProperty<T> selectedElementsProperty, List<T> elements) {
+        ListProperty<T> listProperty = new SimpleListProperty<>(FXCollections.observableArrayList(elements));
 
-        return listView(listProperty, selectedElementsProperty);
+        return listView(selectedElementsProperty, listProperty);
     }
 
-    public <T> ControlRowBuilder<ListView<T>> listView(T[] elementList, ListProperty<T> selectedElementsProperty) {
-        return listView(Arrays.asList(elementList), selectedElementsProperty);
+    public <T> ControlRowBuilder<ListView<T>> listView(ListProperty<T> selectedElementsProperty, T... elements) {
+        return listView(selectedElementsProperty, Arrays.asList(elements));
     }
 
-    public <T> RegionRowBuilder<VBox> radioButtons(T[] elementArray, Property<T> selectedElementProperty) {
-        return radioButtons(Arrays.asList(elementArray), selectedElementProperty);
+    public <T> RegionRowBuilder<VBox> radioButtons(Property<T> selectedElementProperty, T... elements) {
+        return radioButtons(selectedElementProperty, Arrays.asList(elements));
     }
 
-    public <T> RegionRowBuilder<VBox> radioButtons(List<T> elementList, Property<T> selectedElementProperty) {
-        return radioButtons(elementList, selectedElementProperty, new VBox());
+    public <T> RegionRowBuilder<VBox> radioButtons(Property<T> selectedElementProperty, List<T> elements) {
+        return radioButtons(new VBox(), selectedElementProperty, elements);
     }
 
-    public <T> RegionRowBuilder<VBox> radioButtons(List<T> elementList, Property<T> selectedElementProperty, VBox box) {
-        return radioButtons(elementList, selectedElementProperty, box, (pane, radiobutton) -> {
-            pane.getChildren().add(radiobutton);
-        });
+    public <T, P extends Pane> RegionRowBuilder<P> radioButtons(P pane, Property<T> selectedElementProperty, T... elements) {
+        return radioButtons(pane, selectedElementProperty, Arrays.asList(elements));
     }
 
-    public <T> RegionRowBuilder<HBox> radioButtons(List<T> elementList, Property<T> selectedElementProperty, HBox box) {
-        return radioButtons(elementList, selectedElementProperty, box, (pane, radiobutton) -> {
-            pane.getChildren().add(radiobutton);
-        });
+    public <T, P extends Pane> RegionRowBuilder<P> radioButtons(P pane, Property<T> selectedElementProperty, List<T> elements) {
+        return radioButtons(pane, (pane2, radiobutton) -> {
+            pane2.getChildren().add(radiobutton);
+        }, selectedElementProperty, elements);
     }
 
-    public <T, P extends Region> RegionRowBuilder<P> radioButtons(List<T> elementList, Property<T> selectedElementProperty, P pane, BiConsumer<P, RadioButton> paneAdder) {
+    public <T, P extends Region> RegionRowBuilder<P> radioButtons(P pane, BiConsumer<P, RadioButton> paneAdder, Property<T> selectedElementProperty, List<T> elementList) {
         List<RadioButton> radioButtons = new ArrayList<>();
 
         ToggleGroup toggleGroup = new ToggleGroup();
@@ -322,23 +319,27 @@ public class RowBuilder {
         return region(pane);
     }
 
-    public <T> RegionRowBuilder<VBox> checkBoxes(T[] elementArray, ListProperty<T> selectedElementsProperty) {
-        return checkBoxes(Arrays.asList(elementArray), selectedElementsProperty);
+    public <T> RegionRowBuilder<VBox> checkBoxes(ListProperty<T> selectedElementsProperty, T... elements) {
+        return checkBoxes(selectedElementsProperty, Arrays.asList(elements));
     }
 
-    public <T> RegionRowBuilder<VBox> checkBoxes(List<T> elementList, ListProperty<T> selectedElementsProperty) {
-        return checkBoxes(elementList, selectedElementsProperty, new VBox());
+    public <T> RegionRowBuilder<VBox> checkBoxes(ListProperty<T> selectedElementsProperty, List<T> elements) {
+        return checkBoxes(new VBox(), selectedElementsProperty, elements);
     }
 
-    public <T> RegionRowBuilder<VBox> checkBoxes(List<T> elementList, ListProperty<T> selectedElementsProperty, VBox box) {
-        return checkBoxes(elementList, selectedElementsProperty, box, (pane, checkbox) -> {
-            pane.getChildren().add(checkbox);
-        });
+    public <T, P extends Pane> RegionRowBuilder<P> checkBoxes(P pane, ListProperty<T> selectedElementsProperty, List... elements) {
+        return checkBoxes(pane, selectedElementsProperty, Arrays.asList(elements));
     }
 
-    public <T, P extends Region> RegionRowBuilder<P> checkBoxes(List<T> elementList, ListProperty<T> selectedElementsProperty, P pane, BiConsumer<P, CheckBox> paneAdder) {
+    public <T, P extends Pane> RegionRowBuilder<P> checkBoxes(P pane, ListProperty<T> selectedElementsProperty, List<T> elements) {
+        return checkBoxes(pane, (pane2, checkbox) -> {
+            pane2.getChildren().add(checkbox);
+        }, selectedElementsProperty, elements);
+    }
+
+    public <T, P extends Region> RegionRowBuilder<P> checkBoxes(P pane, BiConsumer<P, CheckBox> paneAdder, ListProperty<T> selectedElementsProperty, List<T> elements) {
         List<CheckBox> checkBoxes = new ArrayList<>();
-        for (T element : elementList) {
+        for (T element : elements) {
             CheckBox checkBox = new CheckBox(String.valueOf(element));
             checkBox.setSelected(selectedElementsProperty.contains(element));
             checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
@@ -359,8 +360,8 @@ public class RowBuilder {
             @Override
             public void onChanged(Change<? extends T> c) {
                 Set<T> selectedElements = new HashSet<>(selectedElementsProperty);
-                for (int i = 0; i < elementList.size(); i++) {
-                    T element = elementList.get(i);
+                for (int i = 0; i < elements.size(); i++) {
+                    T element = elements.get(i);
                     CheckBox checkBox = checkBoxes.get(i);
                     checkBox.setSelected(selectedElements.contains(element));
                 }
