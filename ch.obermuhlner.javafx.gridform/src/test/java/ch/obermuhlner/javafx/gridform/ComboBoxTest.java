@@ -14,8 +14,8 @@ import static org.junit.Assert.assertEquals;
 
 public class ComboBoxTest extends AbstractGridFormTest {
 
-    private ListProperty<String> stringListProperty = new SimpleListProperty<String>(FXCollections.observableArrayList());
-    private StringProperty stringProperty = new SimpleStringProperty();
+    private final ListProperty<String> stringListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    private final StringProperty stringProperty = new SimpleStringProperty();
 
     private ComboBox<String> comboxBox;
 

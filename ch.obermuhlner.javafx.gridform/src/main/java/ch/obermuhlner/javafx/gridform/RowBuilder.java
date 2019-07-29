@@ -134,7 +134,7 @@ public class RowBuilder {
     }
 
     public <T> ControlRowBuilder<ComboBox<T>> comboBox(Property<T> selectedElementProperty, ListProperty<T> elementsProperty) {
-        ComboBox<T> control = new ComboBox<T>();
+        ComboBox<T> control = new ComboBox<>();
         Bindings.bindBidirectional(control.itemsProperty(), elementsProperty);
         control.valueProperty().bindBidirectional(selectedElementProperty);
         if (selectedElementProperty.getValue() == null && !elementsProperty.isEmpty()) {
@@ -217,7 +217,7 @@ public class RowBuilder {
             control.getSelectionModel().select(selectedElement);
         }
 
-        control.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<T>() {
+        control.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<>() {
             @Override
             public void onChanged(Change<? extends T> c) {
                 ObservableList<T> selectedItems = control.getSelectionModel().getSelectedItems();
@@ -307,7 +307,8 @@ public class RowBuilder {
 
         toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                selectedElementProperty.setValue((T) newValue.getUserData());
+                T value = (T) newValue.getUserData();
+                selectedElementProperty.setValue(value);
             }
         });
         selectedElementProperty.addListener((observable, oldValue, newValue) -> {

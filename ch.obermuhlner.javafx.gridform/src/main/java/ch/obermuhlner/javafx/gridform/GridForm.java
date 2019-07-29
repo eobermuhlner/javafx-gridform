@@ -1,20 +1,9 @@
 package ch.obermuhlner.javafx.gridform;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 
 import java.text.DecimalFormat;
-import java.text.Format;
-import java.time.LocalDate;
-import java.util.*;
 
 public class GridForm {
     public static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#0");
