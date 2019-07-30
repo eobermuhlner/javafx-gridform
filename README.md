@@ -4,7 +4,11 @@ Fluent API to create forms in a `GridPane`.
 
 ## Example
 
-The following code snippet shows an example on how to use `GridForm` 
+Have a look at the following simple form:
+
+![Labels](docs/images/Example1.png)
+
+The following code snippet shows how to produce this user interface with `GridForm` 
 
 ```java
 public void start(Stage stage) {
@@ -89,7 +93,7 @@ public void start(Stage stage) {
 }
 ```
 
-This example assumes the following `enum`:
+This example assumes the following `enum Animal`:
 ```java
 public enum Animal {
     Dog,
@@ -98,8 +102,6 @@ public enum Animal {
     Fish
 }
 ```
-
-![Labels](docs/images/Example1.png)
 
 ## Usage of `GridForm`
 
