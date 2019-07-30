@@ -2,6 +2,105 @@
 
 Fluent API to create forms in a `GridPane`.
 
+## Example
+
+The following code snippet shows an example on how to use `GridForm` 
+
+```java
+public void start(Stage stage) {
+    GridPane gridPane = new GridPane();
+    GridForm gridForm = new GridForm(gridPane);
+
+    scene = new Scene(gridPane);
+
+    StringProperty stringProperty = new SimpleStringProperty("StringProperty");
+    IntegerProperty integerProperty = new SimpleIntegerProperty(1234);
+    IntegerProperty clickCountProperty = new SimpleIntegerProperty(0);
+    DoubleProperty doubleProperty = new SimpleDoubleProperty(Math.PI);
+    ObjectProperty<Animal> animalProperty = new SimpleObjectProperty<>();
+    ListProperty<Animal> selectedAnimalListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+    ObjectProperty<LocalDate> dateProperty = new SimpleObjectProperty<>(LocalDate.now());
+    ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(Color.PEACHPUFF);
+
+    gridForm.row()
+            .label("Label")
+            .label(stringProperty)
+            .label(integerProperty, GridForm.INTEGER_FORMAT);
+    gridForm.row()
+            .label("Label")
+            .empty()
+            .label("Cells can be empty");
+    gridForm.row()
+            .label("Button")
+            .button("Click me")
+            .setOnAction(button -> {
+                clickCountProperty.set(clickCountProperty.get() + 1);
+            })
+            .label(clickCountProperty, GridForm.INTEGER_FORMAT);
+    gridForm.row()
+            .label("TextField")
+            .textField(stringProperty);
+    gridForm.row()
+            .label("TextField")
+            .textField(doubleProperty, GridForm.DOUBLE_FORMAT);
+    gridForm.row()
+            .label("PasswordField")
+            .passwordField(stringProperty);
+    gridForm.row()
+            .label("Slider")
+            .slider(doubleProperty, 0, 10)
+            .with(slider -> {
+                slider.setShowTickMarks(true);
+                slider.setShowTickLabels(true);
+                slider.setMajorTickUnit(1.0);
+                slider.setMinorTickCount(10);
+            })
+            .label(doubleProperty, GridForm.DOUBLE_FORMAT);
+    gridForm.row()
+            .label("ComboBox")
+            .comboBox(animalProperty, Animal.values());
+    gridForm.row()
+            .label("ChoiceBox")
+            .choiceBox(animalProperty, Animal.values());
+    gridForm.row()
+            .label("RadioButton")
+            .radioButtons(animalProperty, Animal.values());
+    gridForm.row()
+            .label("CheckBox")
+            .checkBoxes(selectedAnimalListProperty, Animal.values());
+    gridForm.row()
+            .label("ListView")
+            .listView(animalProperty, Animal.values())
+            .with(listView -> {
+                listView.setPrefHeight(24 * 4);
+            });
+    gridForm.row()
+            .label("DatePicker")
+            .datePicker(dateProperty);
+    gridForm.row()
+            .label("ColorPicker")
+            .colorPicker(colorProperty);
+    gridForm.row()
+            .label("Node")
+            .node(new Rectangle(20, 20));
+
+    stage.setScene(scene);
+    stage.show();
+}
+```
+
+This example assumes the following `enum`:
+```java
+public enum Animal {
+    Dog,
+    Cat,
+    Cow,
+    Fish
+}
+```
+
+![Labels](docs/images/Example1.png)
+
 ## Usage of `GridForm`
 
 The `GridForm` constructor accepts a `GridPane`:
@@ -32,7 +131,7 @@ gridForm.row()
 ### TextField + PasswordField + TextArea
 Other GUI elements work exactly the same:
 ```java
-StringProperty stringProperty = new SimpleStringProperty("Alpha");
+StringProperty stringProperty = new SimpleStringProperty("StringProperty");
 DoubleProperty doubleProperty = new SimpleDoubleProperty(Math.PI);
 
 gridForm.row()
@@ -188,14 +287,14 @@ gridForm.row()
 ### CheckBox (multi selection)
 
 ```java
-ListProperty<String> selectedAnimalListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
+ListProperty<Animal> selectedAnimalListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
 
 gridForm.row()
         .label("CheckBox")
-        .checkBoxes(selectedAnimalListProperty, stringListProperty);
+        .checkBoxes(selectedAnimalListProperty, Animal.values());
 gridForm.row()
         .label("CheckBox")
-        .checkBoxes(new HBox(), selectedAnimalListProperty, stringListProperty);
+        .checkBoxes(new HBox(), selectedAnimalListProperty, Animal.values());
 ```
 
 ![ComboBox](docs/images/checkboxes.png)

@@ -8,31 +8,23 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
 
-public class ComboBoxTest extends AbstractGridFormTest {
+public class ListViewTest extends AbstractGridFormTest {
 
     private final ListProperty<String> stringListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty stringProperty = new SimpleStringProperty();
 
-    private ComboBox<String> comboxBox;
-
     @Override
     protected void setup(GridForm gridForm) {
         gridForm.row()
-                .label("ComboBox")
-                .comboBox(stringProperty, "Alpha", "Beta")
-                .with(comboxBox -> this.comboxBox = comboxBox);
+                .label("ListView")
+                .listView(stringProperty, "Alpha", "Beta");
     }
 
     @Test
     public void testComboBox() {
         assertEquals("Alpha", stringProperty.get());
-        snapshot("ComboBox1");
-
-        clickOn(comboxBox).clickOn("Beta");
-        assertEquals("Beta", stringProperty.get());
+        snapshot("ListView1");
     }
 }

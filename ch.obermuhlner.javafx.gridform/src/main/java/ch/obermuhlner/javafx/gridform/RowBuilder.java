@@ -76,43 +76,83 @@ public class RowBuilder {
         return control(control);
     }
 
-    public ControlRowBuilder<Label> label(StringProperty text) {
+    public ControlRowBuilder<Label> label(StringProperty textProperty) {
         Label control = new Label();
-        control.textProperty().bindBidirectional(text);
+        control.textProperty().bindBidirectional(textProperty);
 
         return control(control);
     }
 
-    public <T> NodeRowBuilder<Label> label(Property<T> text, Format format) {
+    public <T> ControlRowBuilder<Label> label(Property<T> textProperty, Format format) {
         Label control = new Label();
-        control.textProperty().bindBidirectional(text, format);
+        control.textProperty().bindBidirectional(textProperty, format);
 
         return control(control);
     }
 
-    public ControlRowBuilder<TextField> textField(StringProperty text) {
+    public ControlRowBuilder<TextField> textField(String text) {
+        TextField control = new TextField(text);
+
+        return control(control);
+    }
+
+    public ControlRowBuilder<TextField> textField(StringProperty textProperty) {
         TextField control = new TextField();
-        control.textProperty().bindBidirectional(text);
+        control.textProperty().bindBidirectional(textProperty);
 
         return control(control);
     }
 
-    public <T> ControlRowBuilder<TextField> textField(Property<T> text, Format format) {
+    public <T> ControlRowBuilder<TextField> textField(Property<T> textProperty, Format format) {
         TextField control = new TextField();
-        control.textProperty().bindBidirectional(text, format);
+        control.textProperty().bindBidirectional(textProperty, format);
 
         return control(control);
     }
 
-    public ControlRowBuilder<Slider> slider(Property<Number> value, double min, double max) {
-        Slider control = new Slider(min, max, value.getValue().doubleValue());
-        control.valueProperty().bindBidirectional(value);
+    public ControlRowBuilder<PasswordField> passwordField(StringProperty textProperty) {
+        PasswordField control = new PasswordField();
+        control.textProperty().bindBidirectional(textProperty);
+
+        return control(control);
+    }
+
+    public <T> ControlRowBuilder<PasswordField> passwordField(Property<T> textProperty, Format format) {
+        PasswordField control = new PasswordField();
+        control.textProperty().bindBidirectional(textProperty, format);
+
+        return control(control);
+    }
+
+    public ControlRowBuilder<TextArea> textArea(String text) {
+        TextArea control = new TextArea(text);
+
+        return control(control);
+    }
+
+    public ControlRowBuilder<TextArea> textArea(StringProperty textProperty) {
+        TextArea control = new TextArea();
+        control.textProperty().bindBidirectional(textProperty);
+
+        return control(control);
+    }
+
+    public ControlRowBuilder<Slider> slider(Property<Number> valueProperty, double min, double max) {
+        Slider control = new Slider(min, max, valueProperty.getValue().doubleValue());
+        control.valueProperty().bindBidirectional(valueProperty);
 
         return control(control);
     }
 
     public ButtonRowBuilder button(String text) {
         Button control = new Button(text);
+
+        return node(control, new ButtonRowBuilder(this, control));
+    }
+
+    public ButtonRowBuilder button(StringProperty textProperty) {
+        Button control = new Button();
+        control.textProperty().bindBidirectional(textProperty);
 
         return node(control, new ButtonRowBuilder(this, control));
     }
@@ -444,8 +484,10 @@ public class RowBuilder {
             super(rowBuilder, button);
         }
 
-        public final void setOnAction(EventHandler<ActionEvent> value) {
+        public final ButtonRowBuilder setOnAction(EventHandler<ActionEvent> value) {
             node.onActionProperty().set(value);
+
+            return this;
         }
     }
 }

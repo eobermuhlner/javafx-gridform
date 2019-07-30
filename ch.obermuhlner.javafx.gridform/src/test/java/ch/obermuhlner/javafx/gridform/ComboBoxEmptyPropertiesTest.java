@@ -7,12 +7,14 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import org.junit.Test;
+import org.testfx.api.FxRobotInterface;
+import org.testfx.util.DebugUtils;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class ComboBoxTest extends AbstractGridFormTest {
+public class ComboBoxEmptyPropertiesTest extends AbstractGridFormTest {
 
     private final ListProperty<String> stringListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final StringProperty stringProperty = new SimpleStringProperty();
@@ -22,15 +24,17 @@ public class ComboBoxTest extends AbstractGridFormTest {
     @Override
     protected void setup(GridForm gridForm) {
         gridForm.row()
-                .label("ComboBox")
-                .comboBox(stringProperty, "Alpha", "Beta")
+                .comboBox(stringProperty, stringListProperty)
                 .with(comboxBox -> this.comboxBox = comboxBox);
     }
 
     @Test
     public void testComboBox() {
-        assertEquals("Alpha", stringProperty.get());
-        snapshot("ComboBox1");
+        assertEquals(new ArrayList<String>(), stringListProperty.get());
+        assertEquals(null, stringProperty.get());
+
+        stringListProperty.add("Alpha");
+        stringListProperty.add("Beta");
 
         clickOn(comboxBox).clickOn("Beta");
         assertEquals("Beta", stringProperty.get());

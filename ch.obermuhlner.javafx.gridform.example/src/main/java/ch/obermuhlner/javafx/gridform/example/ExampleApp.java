@@ -4,15 +4,20 @@ import ch.obermuhlner.javafx.gridform.GridForm;
 import javafx.application.Application;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 public class ExampleApp extends Application {
@@ -40,15 +45,19 @@ public class ExampleApp extends Application {
 
         StringProperty stringProperty = new SimpleStringProperty("StringProperty");
         IntegerProperty integerProperty = new SimpleIntegerProperty(1234);
+        IntegerProperty clickCountProperty = new SimpleIntegerProperty(0);
         DoubleProperty doubleProperty = new SimpleDoubleProperty(Math.PI);
         BooleanProperty booleanProperty = new SimpleBooleanProperty();
         ObjectProperty<Animal> animalProperty = new SimpleObjectProperty<>();
-        ListProperty<String> stringListProperty2 = new SimpleListProperty<>(FXCollections.observableArrayList("a", "b", "Unknown"));
+        ListProperty<String> selectedStringListProperty = new SimpleListProperty<>(FXCollections.observableArrayList("a", "b", "Unknown"));
+        ListProperty<Animal> selectedAnimalListProperty = new SimpleListProperty<>(FXCollections.observableArrayList());
         ObjectProperty<LocalDate> dateProperty = new SimpleObjectProperty<>(LocalDate.now());
         ObjectProperty<Color> colorProperty = new SimpleObjectProperty<>(Color.PEACHPUFF);
 
         {
             GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
             GridForm gridForm = new GridForm(gridPane);
 
             gridForm.row()
@@ -61,14 +70,19 @@ public class ExampleApp extends Application {
             gridForm.row()
                     .label("Button")
                     .button("Click me")
-                    .fill()
-                    .with(button -> button.setOnAction(event -> button.setText("Clicked")));
+                    .setOnAction(button -> {
+                        clickCountProperty.set(clickCountProperty.get() + 1);
+                    })
+                    .label(clickCountProperty, GridForm.INTEGER_FORMAT);
             gridForm.row()
                     .label("TextField")
                     .textField(stringProperty);
             gridForm.row()
                     .label("TextField")
                     .textField(doubleProperty, GridForm.DOUBLE_FORMAT);
+            gridForm.row()
+                    .label("PasswordField")
+                    .passwordField(stringProperty);
             gridForm.row()
                     .label("Slider")
                     .slider(doubleProperty, 0, 10)
@@ -81,7 +95,8 @@ public class ExampleApp extends Application {
                     .label(doubleProperty, GridForm.DOUBLE_FORMAT);
             gridForm.row()
                     .label("ComboBox")
-                    .comboBox(animalProperty, animalListProperty);
+                    .comboBox(animalProperty, animalListProperty)
+                    .fill();
             gridForm.row()
                     .label("ComboBox")
                     .comboBox(animalProperty, Animal.values());
@@ -91,6 +106,8 @@ public class ExampleApp extends Application {
 
         {
             GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
             GridForm gridForm = new GridForm(gridPane);
 
             gridForm.row().label("Label");
@@ -112,6 +129,9 @@ public class ExampleApp extends Application {
 
             gridForm.row()
                     .label("Slider")
+                    .slider(doubleProperty, 0, 10);
+            gridForm.row()
+                    .label("Slider")
                     .slider(doubleProperty, 0, 10)
                     .with(slider -> {
                         slider.setShowTickMarks(true);
@@ -125,6 +145,8 @@ public class ExampleApp extends Application {
 
         {
             GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
             GridForm gridForm = new GridForm(gridPane);
 
             gridForm.row().label("Label").label(stringProperty);
@@ -145,6 +167,8 @@ public class ExampleApp extends Application {
 
         {
             GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
             GridForm gridForm = new GridForm(gridPane);
 
             gridForm.row().label("Label").label(stringProperty);
@@ -170,23 +194,25 @@ public class ExampleApp extends Application {
 
         {
             GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
             GridForm gridForm = new GridForm(gridPane);
 
             gridForm.row().label("ListView")
-                    .listView(stringListProperty2, stringListProperty)
+                    .listView(selectedStringListProperty, stringListProperty)
                     .with(listView -> listView.setPrefHeight(24 * 8));
             gridForm.row().label("Selected ListView")
-                    .listView(stringProperty, stringListProperty2)
+                    .listView(stringProperty, selectedStringListProperty)
                     .with(listView -> listView.setPrefHeight(24 * 8));
-            gridForm.row().label("CheckBox").checkBoxes(stringListProperty2, stringListProperty);
-            gridForm.row().label("CheckBox").checkBoxes(new HBox(), stringListProperty2, stringListProperty);
+            gridForm.row().label("CheckBox").checkBoxes(selectedStringListProperty, stringListProperty);
+            gridForm.row().label("CheckBox").checkBoxes(new HBox(), selectedStringListProperty, stringListProperty);
 
             gridForm.row().label("Action")
                     .button("Add x,y,z")
                     .setOnAction(event -> {
-                        stringListProperty2.add("x");
-                        stringListProperty2.add("y");
-                        stringListProperty2.add("z");
+                        selectedStringListProperty.add("x");
+                        selectedStringListProperty.add("y");
+                        selectedStringListProperty.add("z");
                     });
 
             mainTabPane.getTabs().add(new Tab("Lists (Multi Selection)", gridPane));
@@ -194,6 +220,8 @@ public class ExampleApp extends Application {
 
         {
             GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
             GridForm gridForm = new GridForm(gridPane);
 
             gridForm.row().label("DatePicker").datePicker(dateProperty);
@@ -201,6 +229,98 @@ public class ExampleApp extends Application {
             gridForm.row().label("Node").node(new Rectangle(20, 20));
 
             mainTabPane.getTabs().add(new Tab("Misc", gridPane));
+        }
+
+        {
+            GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
+            GridForm gridForm = new GridForm(gridPane);
+
+            gridForm.row()
+                    .label("Label")
+                    .label(stringProperty)
+                    .label(integerProperty, GridForm.INTEGER_FORMAT);
+
+            gridForm.row()
+                    .label("TextField")
+                    .textField(stringProperty);
+            gridForm.row()
+                    .label("TextField")
+                    .textField(doubleProperty, GridForm.DOUBLE_FORMAT);
+            gridForm.row()
+                    .label("PasswordField")
+                    .passwordField(stringProperty);
+            gridForm.row()
+                    .label("TextArea")
+                    .textArea(stringProperty);
+
+            gridForm.row()
+                    .label("Button")
+                    .button("Click me")
+                    .setOnAction(button -> {
+                        integerProperty.set(integerProperty.get() + 1);
+                    });
+
+            mainTabPane.getTabs().add(new Tab("Examples 1", gridPane));
+        }
+
+        {
+            GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
+            GridForm gridForm = new GridForm(gridPane);
+
+            stringListProperty.setAll("a", "b", "c");
+
+            gridForm.row()
+                    .label("ComboBox")
+                    .comboBox(stringProperty, "Alpha", "Beta", "Gamma")
+                    .label("ComboBox")
+                    .comboBox(stringProperty, stringListProperty);
+
+            stringListProperty.add("d");
+
+            gridForm.row()
+                    .label("ComboBox")
+                    .comboBox(animalProperty, animalListProperty)
+                    .label("ComboBox")
+                    .comboBox(animalProperty, Animal.values());
+
+            gridForm.row()
+                    .label("ChoiceBox")
+                    .choiceBox(stringProperty, stringListProperty)
+                    .label("ChoiceBox")
+                    .choiceBox(animalProperty, Animal.values());
+
+            mainTabPane.getTabs().add(new Tab("Examples2", gridPane));
+        }
+
+        {
+            GridPane gridPane = new GridPane();
+            gridPane.setHgap(4);
+            gridPane.setVgap(4);
+            GridForm gridForm = new GridForm(gridPane);
+
+            gridForm.row()
+                    .label("RadioButton")
+                    .radioButtons(animalProperty, Animal.values());
+            gridForm.row()
+                    .label("RadioButton")
+                    .radioButtons(new HBox(), animalProperty, Animal.values());
+
+            gridForm.row()
+                    .label("CheckBox")
+                    .checkBoxes(selectedAnimalListProperty, Animal.values());
+            gridForm.row()
+                    .label("CheckBox")
+                    .checkBoxes(new HBox(), selectedAnimalListProperty, Animal.values());
+
+            gridForm.row().label("ListView")
+                    .listView(selectedAnimalListProperty, animalListProperty)
+                    .with(listView -> listView.setPrefHeight(24 * 6));
+
+            mainTabPane.getTabs().add(new Tab("Examples3", gridPane));
         }
 
         primaryStage.setScene(scene);
